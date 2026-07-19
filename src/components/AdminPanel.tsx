@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { 
   Save, Layout, User, Image as ImageIcon, Paintbrush, Mail, 
   Plus, Trash2, Edit2, Check, ArrowLeft, Upload, LogOut, 
-  Eye, EyeOff, Globe, Sparkles, RefreshCw, Layers, Key
+  Eye, EyeOff, Globe, Sparkles, RefreshCw, Layers, Key,
+  Copy, Download, FileCode
 } from 'lucide-react';
 import { PortfolioData, PortfolioItem, ThemeConfig, AboutConfig, HeadlineConfig, ContactMessage } from '../types';
 
@@ -13,7 +14,7 @@ interface AdminPanelProps {
   isStaticMode?: boolean;
 }
 
-type TabType = 'headline' | 'about' | 'gallery' | 'theme' | 'inbox' | 'categories' | 'password';
+type TabType = 'headline' | 'about' | 'gallery' | 'theme' | 'inbox' | 'categories' | 'password' | 'export';
 
 import { CategoryConfig } from '../types';
 
@@ -37,6 +38,7 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
   });
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [copied, setCopied] = useState(false);
 
   // Category management states
   const [editingCategory, setEditingCategory] = useState<CategoryConfig | null>(null);
@@ -655,6 +657,14 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
           >
             <Key className="h-4 w-4" />
             <span>Ubah Password Admin</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('export'); setEditingItem(null); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all text-left ${activeTab === 'export' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/15' : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'}`}
+          >
+            <FileCode className="h-4 w-4" />
+            <span>Ekspor Data (Vercel)</span>
           </button>
         </aside>
 
@@ -1775,6 +1785,91 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
                   {isChangingPassword ? 'Sedang Mengubah...' : 'Ubah Password Admin'}
                 </button>
               </form>
+            </div>
+          )}
+
+          {/* TAB: EXPORT FOR VERCEL */}
+          {activeTab === 'export' && (
+            <div className="space-y-6 max-w-4xl">
+              <div className="border-b border-slate-850 pb-4">
+                <h2 className="text-xl font-bold font-grotesk flex items-center gap-2 text-[#F0F0F0]">
+                  <Globe className="h-5 w-5 text-purple-400" /> Ekspor Portofolio Anda untuk Vercel / Mode Statis
+                </h2>
+                <p className="text-xs text-slate-400 leading-relaxed mt-1">
+                  Karena Anda mendeploy di Vercel (yang bersifat read-only / tanpa database live persisten), semua perubahan yang Anda lakukan saat ini hanya tersimpan secara lokal di browser Anda. Ikuti petunjuk di bawah ini agar perubahan Anda permanen dan dapat dilihat oleh semua orang di dunia!
+                </p>
+              </div>
+
+              {/* Step-by-Step Guide */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-slate-900/50 border border-slate-850 p-4 rounded-xl space-y-2">
+                  <div className="h-6 w-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-bold">1</div>
+                  <h3 className="font-bold text-xs text-white uppercase tracking-wider">Simpan Perubahan</h3>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">Pastikan semua edit, poster, dan kategori yang baru telah disimpan dengan mengklik tombol <strong className="text-slate-300">"Simpan Semua"</strong> di bagian atas panel ini.</p>
+                </div>
+                <div className="bg-slate-900/50 border border-slate-850 p-4 rounded-xl space-y-2">
+                  <div className="h-6 w-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-bold">2</div>
+                  <h3 className="font-bold text-xs text-white uppercase tracking-wider">Salin atau Unduh Kode</h3>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">Klik tombol <strong className="text-slate-300">"Salin Kode File (.TS)"</strong> di bawah ini untuk menyalin seluruh isi konfigurasi portofolio Anda yang baru.</p>
+                </div>
+                <div className="bg-slate-900/50 border border-slate-850 p-4 rounded-xl space-y-2">
+                  <div className="h-6 w-6 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center text-xs font-bold">3</div>
+                  <h3 className="font-bold text-xs text-white uppercase tracking-wider">Perbarui GitHub / Code</h3>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">Buka file <code className="bg-slate-950 px-1 py-0.5 rounded text-purple-400 text-[10px] font-mono">src/defaultPortfolioData.ts</code> di kode proyek Anda (misalnya di GitHub) lalu ganti seluruh isinya dengan kode yang baru Anda salin. Commit, push, dan Vercel akan otomatis meng-update web Anda!</p>
+                </div>
+              </div>
+
+              {/* Code Area */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-400">Pratinjau Kode File <code className="text-purple-400 font-mono text-[11px]">src/defaultPortfolioData.ts</code></span>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        const fileContent = `import { PortfolioData } from './types';\n\nexport const defaultPortfolioData: PortfolioData = ${JSON.stringify(portfolio, null, 2)};\n`;
+                        navigator.clipboard.writeText(fileContent);
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                      }}
+                      className="flex items-center gap-1.5 text-xs bg-purple-600 hover:bg-purple-500 text-white py-1.5 px-3 rounded-lg transition-all"
+                    >
+                      {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      {copied ? 'Berhasil Disalin!' : 'Salin Kode File'}
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        const fileContent = `import { PortfolioData } from './types';\n\nexport const defaultPortfolioData: PortfolioData = ${JSON.stringify(portfolio, null, 2)};\n`;
+                        const blob = new Blob([fileContent], { type: 'text/typescript' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'defaultPortfolioData.ts';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                      }}
+                      className="flex items-center gap-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 px-3 rounded-lg border border-slate-700 transition-all"
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      Unduh File .TS
+                    </button>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <textarea
+                    readOnly
+                    value={`import { PortfolioData } from './types';\n\nexport const defaultPortfolioData: PortfolioData = ${JSON.stringify(portfolio, null, 2)};`}
+                    rows={12}
+                    className="w-full bg-slate-950 border border-slate-850 rounded-xl p-4 font-mono text-[10px] text-slate-300 focus:outline-none"
+                  />
+                  <div className="absolute bottom-3 right-3 text-[10px] text-slate-500 font-sans pointer-events-none bg-slate-950/80 px-2 py-1 rounded">
+                    Format TypeScript (TS) siap pakai
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </main>
