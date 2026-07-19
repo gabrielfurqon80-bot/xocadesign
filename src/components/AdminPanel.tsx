@@ -214,16 +214,30 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
 
   // Gallery operations
   const startEditItem = (item: PortfolioItem) => {
-    setEditingItem({ ...item });
+    const categories = portfolio.categories || [];
+    const categoryExists = categories.some(cat => cat.name.toLowerCase() === item.category.toLowerCase());
+    
+    let updatedCategory = item.category;
+    if (!categoryExists && categories.length > 0) {
+      updatedCategory = categories[0].name;
+    }
+    
+    setEditingItem({ 
+      ...item,
+      category: updatedCategory
+    });
     setIsAddingNew(false);
   };
 
   const startAddNewItem = () => {
+    const defaultCat = portfolio.categories && portfolio.categories.length > 0 
+      ? portfolio.categories[0].name 
+      : 'Cyberpunk';
     setEditingItem({
       id: `poster-${Date.now()}`,
       title: '',
       description: '',
-      category: 'Cyberpunk',
+      category: defaultCat,
       imageUrl: '',
       tags: [],
       client: '',
@@ -361,13 +375,28 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
     
     let confirmMsg = `Apakah Anda yakin ingin menghapus kategori "${catName}"?`;
     if (itemsUsing.length > 0) {
-      confirmMsg = `Kategori "${catName}" sedang digunakan oleh ${itemsUsing.length} poster desain. Jika Anda menghapus kategori ini, poster-poster tersebut akan tetap tersimpan tetapi Anda harus memindahkan kategorinya. Apakah Anda yakin?`;
+      confirmMsg = `Kategori "${catName}" sedang digunakan oleh ${itemsUsing.length} poster desain. Jika Anda menghapus kategori ini, semua poster tersebut akan otomatis dialihkan ke kategori lain agar tidak hilang. Apakah Anda yakin?`;
     }
     
     if (confirm(confirmMsg)) {
       const categories = portfolio.categories || [];
       const updatedCategories = categories.filter(cat => cat.name.toLowerCase() !== catName.toLowerCase());
-      const updatedPortfolio = { ...portfolio, categories: updatedCategories };
+      
+      const fallbackCat = updatedCategories.length > 0 ? updatedCategories[0].name : 'Umum';
+      
+      // Update items to use the fallback category
+      const updatedItems = portfolio.items.map(item => {
+        if (item.category.toLowerCase() === catName.toLowerCase()) {
+          return { ...item, category: fallbackCat };
+        }
+        return item;
+      });
+      
+      const updatedPortfolio = { 
+        ...portfolio, 
+        categories: updatedCategories, 
+        items: updatedItems 
+      };
       setPortfolio(updatedPortfolio);
       handleSaveAll(updatedPortfolio);
     }
