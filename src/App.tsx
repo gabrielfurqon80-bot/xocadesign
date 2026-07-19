@@ -109,8 +109,17 @@ export default function App() {
 
   // Handle updating portfolio configuration in database
   const handleSavePortfolio = async (newData: PortfolioData): Promise<boolean> => {
-    // Save to localStorage immediately for offline persistence
-    localStorage.setItem('custom-portfolio-data', JSON.stringify(newData));
+    // Save to localStorage immediately for offline persistence with error handling
+    try {
+      localStorage.setItem('custom-portfolio-data', JSON.stringify(newData));
+    } catch (e: any) {
+      console.error('Failed to save to localStorage:', e);
+      if (e.name === 'QuotaExceededError' || e.code === 22) {
+        alert('Peringatan: Kapasitas penyimpanan offline browser penuh! Gambar yang diunggah terlalu besar. Silahkan coba unggah gambar yang beresolusi atau ukuran lebih kecil.');
+      } else {
+        alert('Gagal menyimpan perubahan ke browser.');
+      }
+    }
     setData(newData);
 
     if (isStaticMode) {

@@ -119,7 +119,42 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
     setPortfolio(updated);
   };
 
-  // Base64 file uploader logic
+  // Base64 file uploader logic with client-side image compression
+  const compressImage = (base64Str: string, maxWidth = 1000, maxHeight = 1000): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.75));
+        } else {
+          resolve(base64Str);
+        }
+      };
+      img.onerror = () => {
+        resolve(base64Str);
+      };
+    });
+  };
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'avatar' | 'item', callback: (url: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -127,7 +162,20 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
     setUploadingImage(target);
     const reader = new FileReader();
     reader.onloadend = async () => {
-      const base64String = reader.result as string;
+      let base64String = reader.result as string;
+      
+      try {
+        base64String = await compressImage(base64String);
+      } catch (err) {
+        console.warn('Gagal mengompresi gambar, menggunakan file asli:', err);
+      }
+      
+      if (isStaticMode) {
+        callback(base64String);
+        setUploadingImage(null);
+        return;
+      }
+
       try {
         const response = await fetch('/api/upload', {
           method: 'POST',
@@ -141,7 +189,8 @@ export default function AdminPanel({ data, onSave, onLogout, isStaticMode }: Adm
           alert("Gagal mengunggah gambar: " + (resData.error || "Kesalahan server"));
         }
       } catch (err) {
-        alert("Gagal menghubungi server untuk mengunggah file.");
+        alert("Gagal menghubungi server untuk mengunggah file. Disimpan sebagai data lokal.");
+        callback(base64String);
       } finally {
         setUploadingImage(null);
       }
