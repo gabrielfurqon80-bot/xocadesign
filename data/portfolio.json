@@ -1,0 +1,108 @@
+{
+  "headline": {
+    "greeting": "HALO, SAYA DEVIN",
+    "title": "Mengubah Gagasan Menjadi Karya Visual yang Spektakuler",
+    "subtitle": "Desainer Grafis & Seni Visual Digital dengan spesialisasi gaya modern brutalist, minimalist, dan cyberpunk.",
+    "badgeText": "TERSEDIA UNTUK PROJECT BARU"
+  },
+  "about": {
+    "name": "Devin Al-Farez",
+    "role": "Lead Graphic Designer & Digital Artist",
+    "bio": "Saya adalah seorang desainer grafis dengan pengalaman lebih dari 5 tahun dalam menciptakan identitas visual yang berani dan tak terlupakan. Berfokus pada seni digital modern yang memadukan estetika dark, cyberpunk, minimalisme Swiss, dan tekstur organik cair (fluid liquid chrome). Saya percaya bahwa setiap desain harus memiliki jiwa dan menyampaikan cerita yang mendalam.",
+    "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400",
+    "skills": [
+      "Branding & Identity",
+      "Digital Poster Art",
+      "Typographic Layouts",
+      "UI/UX Concept",
+      "Liquid Chrome Art",
+      "Vector Illustration",
+      "Visual Art Direction"
+    ],
+    "socials": {
+      "instagram": "https://instagram.com",
+      "dribbble": "https://dribbble.com",
+      "behance": "https://behance.net",
+      "email": "devin@example.com",
+      "github": "https://github.com"
+    }
+  },
+  "theme": {
+    "primaryColor": "#a855f7",
+    "accentColor": "#22c55e",
+    "bgVariant": "midnight",
+    "fontFamily": "sans",
+    "borderStyle": "rounded"
+  },
+  "items": [
+    {
+      "id": "1",
+      "title": "Neo Tokyo 2088 Poster Series",
+      "description": "Eksplorasi estetika cyberpunk masa depan dengan tipografi neon yang menyala, detail sirkuit metalik, dan suasana retro-futuristik kota fiksi Tokyo.",
+      "category": "Cyberpunk",
+      "imageUrl": "/uploads/poster_cyberpunk.jpg",
+      "tags": [
+        "Cyberpunk",
+        "Typographic",
+        "Glowing Neon",
+        "Digital Art"
+      ],
+      "client": "Personal Art Project",
+      "year": "2026",
+      "aspectRatio": "portrait"
+    },
+    {
+      "id": "2",
+      "title": "Swiss Minimalist Exhibition",
+      "description": "Poster pameran desain minimalis gaya Swiss klasik yang mengutamakan kisi-kisi asimetris, geometri tebal, kontras tinggi warna merah menyala, dan tekstur kertas organik.",
+      "category": "Minimalist",
+      "imageUrl": "/uploads/poster_minimalist_swiss.jpg",
+      "tags": [
+        "Swiss Design",
+        "Minimalism",
+        "Bold Geometry",
+        "Exhibition"
+      ],
+      "client": "Zurich Design Collective",
+      "year": "2025",
+      "aspectRatio": "portrait"
+    },
+    {
+      "id": "3",
+      "title": "Fluidity: Liquid Chrome Art",
+      "description": "Karya seni visual eksperimental yang menggunakan tekstur perak cair (liquid chrome) organik dengan pantulan warna holografik dan tata letak modern brutalist.",
+      "category": "Brutalist",
+      "imageUrl": "/uploads/poster_liquid_chrome.jpg",
+      "tags": [
+        "Liquid Chrome",
+        "Brutalist",
+        "Holographic",
+        "3D Texture"
+      ],
+      "client": "Fluid State Gallery",
+      "year": "2026",
+      "aspectRatio": "portrait"
+    }
+  ],
+  "contactMessages": [
+    {
+      "id": "initial-msg",
+      "name": "Gabriel Furqon",
+      "email": "gabrielfurqon80@gmail.com",
+      "subject": "Project Kolaborasi Poster Musik",
+      "message": "Halo Devin, saya melihat karya fluid liquid chrome Anda dan sangat tertarik untuk bekerjasama dalam pembuatan official poster untuk album musik terbaru band kami. Apakah Anda tertarik? Silahkan hubungi saya kembali.",
+      "date": "2026-07-19T05:14:28.109Z",
+      "read": true
+    }
+  ],
+  "categories": [
+    { "name": "Cyberpunk", "maxUploads": 10 },
+    { "name": "Minimalist", "maxUploads": 5 },
+    { "name": "Brutalist", "maxUploads": 10 },
+    { "name": "Holographic", "maxUploads": 10 },
+    { "name": "Liquid Chrome", "maxUploads": 10 },
+    { "name": "Typography", "maxUploads": 10 },
+    { "name": "Illustration", "maxUploads": 10 },
+    { "name": "Identity", "maxUploads": 10 }
+  ]
+}

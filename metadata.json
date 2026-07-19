@@ -1,0 +1,6 @@
+{
+  "name": "Graphic Designer Portfolio",
+  "description": "A premium, responsive portfolio for graphic designers featuring a dark aesthetic, category filtering, and a powerful local admin panel to customize layouts, headline text, themes, and manage design items.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
